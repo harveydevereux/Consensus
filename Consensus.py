@@ -87,7 +87,7 @@ class Consensus_Simulation:
 
     def plot(self):
         """Show the convergence analysis"""
-        if(len(X)==0 or len(T)==0):
+        if(len(self.X)==0 or len(self.T)==0):
             print("Nothing to plot...")
         x = np.array(self.X)
         for i in range(0,x.shape[1]):

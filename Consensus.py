@@ -69,7 +69,7 @@ class Consensus_Simulation:
         start = time.time()
         while self.agreement() == False:
             if(t==0 and self.warn and not nx.is_connected(self.graph)):
-                print("Graph not connected, conensus algorithm will probably not converge!")
+                print("Graph not connected, consensus algorithm will probably not converge!")
                 print("Simulating to 5 seconds...")
                 flag = True
             if(flag and time.time()-start>5):

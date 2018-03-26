@@ -76,7 +76,7 @@ class Consensus_Simulation:
                 break
             # core simulation done here
             # very simple discretisation...
-            self.x = self.x+self.dt*self.f(self.x,self.f_arg)
+            self.x = self.x+self.dt*self.f(self.x,*self.f_arg)
             # odd way to test for 1,2,3,etc
             # when arg is float
             if (t-np.floor(t)<1e-2):

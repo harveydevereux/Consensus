@@ -23,6 +23,8 @@ class Consensus_Simulation:
                  , type(nx.Graph()))
         if(callable(dynamics)):
             self.f = dynamics
+            if(len(dynamics_args)==1):
+                self.f_arg = (dynamics_args,1)
             self.f_arg = dynamics_args
         else:
             print("Argument Error: dynamics must be a function")

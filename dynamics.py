@@ -1,12 +1,12 @@
 import numpy as np
 import networkx as nx
 
-def distributed(x,L):
+def distributed(x,L, *args):
     """Most basic distributed consensus algorithm
        It's actually gradient descent of 1/2(xLx)"""
     return -np.dot(L,x)
 
-def distributed_random_topology(x,graph, proportion=0.5):
+def distributed_random_topology(x,graph, proportion=0.5, *args):
     """Same as dynamics but randomly rewires
        the graph edge connections."""
     nx.connected_double_edge_swap(graph,np.floor(proportion*len(graph.nodes())))

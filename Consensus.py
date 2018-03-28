@@ -51,7 +51,7 @@ class Consensus_Simulation:
         self.tau_max = (np.pi)/(4*self.d_max)
 
     def disagreement(self):
-        """Returns the 'error'/in-homogeneity in the
+        """Returns the 'error'/inhomogeneity in the
            decision vector"""
         return 0.5*(np.dot(np.dot(np.transpose(self.x),self.L),self.x)).item(0)
 

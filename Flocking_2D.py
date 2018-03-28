@@ -46,12 +46,17 @@ class Flock_Simulation:
         if(position_init==None):
             self.r = np.zeros((self.size,2))
             for i in range(0,self.size):
-                self.r[i] = 5*np.random.randn(2)
+                self.r[i] = 5*np.random.rand(2)
             self.s_graph = self.S_graph_pos(self.r)
         if(velocity_init==None):
             self.v = np.zeros((self.size,2))
             for i in range(0,self.size):
-                self.v[i] = 5*np.random.randn(2)
+                self.v[i] = 8*np.random.rand(2)
+                if (np.random.rand(1)<0.5):
+                    self.v[i,0] = -1*self.v[i,0]
+                if (np.random.rand(1)<0.5):
+                    self.v[i,1] = -1*self.v[i,1]
+
         self.dt = time_step
         self.R = distance_threshold
 
@@ -86,7 +91,7 @@ class Flock_Simulation:
             u = self.v.copy()
             self.v = self.v + self.dt*self.v_dot(self.v,self.r,self.v_graph, self.s_graph, *self.v_dot_arg)
             self.r = self.r+self.dt*self.r_dot(u,self.r,self.v_graph, self.s_graph, *self.v_dot_arg)
-            self.s_graph = self.S_graph_pos(self.r.self.R)
+            self.s_graph = self.S_graph_pos(self.r,self.R)
             t = t+self.dt
         print(time.time()-start)
 
@@ -107,18 +112,23 @@ class Flock_Simulation:
 
     def plot(self):
         unit = np.zeros(self.v.shape)
+        norms = np.zeros(self.v.shape[0])
         for i in range(0,len(self.v)):
-            unit[i] = self.v[i]/norm(self.v[i])
+            norms[i] = norm(self.v[i])
+            unit[i] = self.v[i]/norms[i]
+        rel = np.zeros(self.v.shape)
+        for i in range(0,self.v.shape[0]):
+            rel[i] = unit[i]*(norm(self.v[i])/max(norms))
 
         for i in range(0,self.size):
-            plt.arrow(self.r[i,0],self.r[i,1],unit[i,0],unit[i,1],
+            plt.arrow(self.r[i,0],self.r[i,1],rel[i,0],rel[i,1],
                       width=.1,
                       edgecolor='green',
                       facecolor='green')
 
 
-        nx.draw_networkx(self.s_graph, pos=self.r, edge_color='r', width=5)
-        nx.draw_networkx(self.v_graph, pos=self.r, edge_color='black', width=2.5)
+        nx.draw_networkx(self.s_graph, pos=self.r, edge_color='black', width=2.5, node_size=25, with_labels=False)
+        nx.draw_networkx(self.v_graph, pos=self.r, edge_color='blue', width=0.5, node_size=25, with_labels=False)
 
-        plt.xlim(plt.xlim()[0]-unit[0,0],plt.xlim()[1]+unit[0,0])
-        plt.ylim(plt.ylim()[0]-unit[0,1], plt.ylim()[1]+unit[0,1])
+        plt.xlim(plt.xlim()[0]-np.abs(unit[0,0]),plt.xlim()[1]+np.abs(unit[0,0]))
+        plt.ylim(plt.ylim()[0]-np.abs(unit[0,1]), plt.ylim()[1]+np.abs(unit[0,1]))

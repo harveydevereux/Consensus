@@ -2,6 +2,7 @@ import networkx as nx
 import numpy as np
 from numpy.linalg import norm
 import matplotlib.pyplot as plt
+import time
 
 class Flock_Simulation:
     def __init__(self,
@@ -13,7 +14,8 @@ class Flock_Simulation:
                  time_step=0.01,
                  position_graph = None,
                  position_init = None,
-                 velocity_init = None):
+                 velocity_init = None,
+                 distance_threshold=2):
         if(isinstance(velocity_graph,nx.Graph)):
             self.v_graph = velocity_graph
             self.size = len(self.v_graph)
@@ -44,15 +46,16 @@ class Flock_Simulation:
         if(position_init==None):
             self.r = np.zeros((self.size,2))
             for i in range(0,self.size):
-                self.r[i] = 5*np.random.rand(2)
+                self.r[i] = 5*np.random.randn(2)
             self.s_graph = self.S_graph_pos(self.r)
         if(velocity_init==None):
             self.v = np.zeros((self.size,2))
             for i in range(0,self.size):
-                self.v[i] = 5*np.random.rand(2)
+                self.v[i] = 5*np.random.randn(2)
         self.dt = time_step
+        self.R = distance_threshold
 
-    def S_graph_pos(self,positions,R=3):
+    def S_graph_pos(self,positions,R=2):
         S = nx.Graph()
         if (positions.shape[1] != 2):
             size = (int(positions.shape[1]/2),2)
@@ -78,12 +81,29 @@ class Flock_Simulation:
 
     def run_sim(self):
         t=0
+        start = time.time()
         while self.velocity_angle_agreement(self.v)==False:
             u = self.v.copy()
             self.v = self.v + self.dt*self.v_dot(self.v,self.r,self.v_graph, self.s_graph, *self.v_dot_arg)
             self.r = self.r+self.dt*self.r_dot(u,self.r,self.v_graph, self.s_graph, *self.v_dot_arg)
-            self.s_graph = self.S_graph_pos(self.r)
+            self.s_graph = self.S_graph_pos(self.r.self.R)
             t = t+self.dt
+        print(time.time()-start)
+
+    def run_sim_switch(self):
+        t=0
+        p=0.75
+        proportion=0.75
+        start = time.time()
+        while self.velocity_angle_agreement(self.v)==False:
+            u = self.v.copy()
+            self.v = self.v + self.dt*self.v_dot(self.v,self.r,self.v_graph, self.s_graph, *self.v_dot_arg)
+            self.r = self.r+ self.dt*self.r_dot(u,self.r,self.v_graph, self.s_graph, *self.v_dot_arg)
+            self.s_graph = self.S_graph_pos(self.r,self.R)
+            if(np.random.rand(1)<p):
+                nx.connected_double_edge_swap(self.v_graph,np.floor(proportion*self.size))
+            t = t+self.dt
+        print(time.time()-start)
 
     def plot(self):
         unit = np.zeros(self.v.shape)

@@ -87,10 +87,11 @@ class Flock:
         while t<T:
             self.G = self.get_net(self.Q)
             Q = self.Q.copy()
+            P = self.P.copy()
             self.Q = self.Q+self.P*self.dt
-            self.P = self.P+self.P_dot()*self.dt
+            self.P = self.P+self.P_dot(Q)*self.dt
             if(self.gamma_agent):
-                self.P = self.P+self.f_gamma()*self.dt
+                self.P = self.P+self.f_gamma(Q,P)*self.dt
                 self.q = self.q + self.p*self.dt
             if(save_data):
                 self.Q_sim.append(self.Q)
@@ -171,15 +172,24 @@ class Flock:
                         G.add_edge(i,j)
         return(G)
 
-    def P_dot(self):
+    def P_dot(self,Q):
         """For Flock class mostly"""
         u = np.zeros((self.N,2))
-        A = nx.adjacency_matrix(self.G).todense()
+        A = self.get_spatial_adjacency(Q)
         for i in self.G.nodes():
             for j in self.G.neighbors(i):
-                u[i] = u[i] + self.phi_alpha(self.sigma_norm(self.Q[j,:]-self.Q[i,:]))*(self.sigma_grad(self.Q[j,:]-self.Q[i,:]))
-                u[i] = u[i] + A[i,j]*(self.Q[j,:]-self.Q[i,:])
+                u[i] = u[i] + self.phi_alpha(self.sigma_norm(Q[j,:]-Q[i,:]))*(self.sigma_grad(Q[j,:]-Q[i,:]))
+                u[i] = u[i] + A[i,j]*(Q[j,:]-Q[i,:])
         return u
+
+    def get_spatial_adjacency(self,Q):
+        r_alpha = self.sigma_norm(self.r)
+        A = np.zeros((self.N,self.N))
+        for i in range(0,self.N):
+            for j in range(0,self.N):
+                if (i != j):
+                    A[i,j] = self.rho_h(self.sigma_norm(Q[j]-Q[i])/r_alpha)
+        return A
 
 
     def sigma_norm(self,z):
@@ -200,5 +210,5 @@ class Flock:
         d_alpha = self.sigma_norm(self.d)
         return self.rho_h(z/r_alpha)*self.phi(z-d_alpha)
 
-    def f_gamma(self):
-        return -self.C_q*(self.Q-self.q)-self.C_p*(self.P-self.p)
+    def f_gamma(self,Q,P):
+        return -self.C_q*(Q-self.q)-self.C_p*(P-self.p)

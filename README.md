@@ -1,8 +1,7 @@
 # Consensus
-Implements consensus algorithms on fixed and time varying graphs and a flocking based
-consensus algorithm (velocity consensus). This
-is then used to present numerical results relating to the theoretical
-work below and beyond.
+Implements consensus algorithms on fixed and time varying graphs including a flocking based
+consensus algorithm (velocity matching) and a general folocking algorithm based
+on the framework in [3]. 
 
 Nice movie: https://github.com/harveydevereux/Consensus/blob/master/Data/movie.gif 
 

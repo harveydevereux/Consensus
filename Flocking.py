@@ -12,8 +12,12 @@ def rho_h(z,h=0.2):
         return 0
 
 class Flock:
+    """Implements the flocking framework as proposed in
+    [3] R. Olfati-Saber, "Flocking for multi-agent dynamic systems:
+    algorithms and theory," in IEEE Transactions on Automatic Control,
+    vol. 51, no. 3, pp. 401-420, March 2006. doi: 10.1109/TAC.2005.864190"""
     def __init__(self,
-                 acceleration,
+                 acceleration=None,
                  acceleration_args=None,
                  inter_agent_distance=7,
                  communication_range=None,
@@ -25,26 +29,33 @@ class Flock:
                  phi_a=5,
                  phi_b=5,
                  bump_function=None,
+                 gamma_agent=False,
+                 gamma_agent_Cq=1,
+                 gamma_agent_Cp=1
                  ):
         self.N = number_of_agents
-        if(initial_position.any()==None):
-            self.Q = np.sqrt(250)*np.random.randn(self.N,2)
-        else:
+        if(isinstance(initial_position,type(np.ones(1)))):
             self.Q = initial_position
-        if(initial_velocity.any()==None):
-            self.P = (10)*np.random.rand(self.N,2)-1
-        else:
+        elif(initial_position==None):
+            self.Q = np.sqrt(25)*np.random.randn(self.N,2)
+        if(isinstance(initial_velocity,type(np.ones(1)))):
             self.P = initial_velocity
+        elif(initial_velocity==None):
+            self.P = (10)*np.random.rand(self.N,2)-1
+        self.gamma_agent=gamma_agent
+        if(gamma_agent):
+            self.p = (10)*np.random.rand(1,2)-1
+            self.q = np.sqrt(50)*np.random.randn(1,2)
+            self.C_q = gamma_agent_Cq
+            self.C_p = gamma_agent_Cp
 
         if(callable(acceleration)):
             self.P_dot = acceleration
-        else:
-            print("Argument Error: acceleration must be a function")
-        if(acceleration_args != None):
-            if(len(acceleration_args)==1):
-                self.args = (acceleration_args,1)
-            else:
-                self.args = acceleration_args
+            if(acceleration_args != None):
+                if(len(acceleration_args)==1):
+                    self.args = (acceleration_args,1)
+                else:
+                    self.args = acceleration_args
 
         self.dt = time_step
         # gets the neighbour graph: edge if ||q_j-q_i||<r
@@ -66,13 +77,27 @@ class Flock:
 
         self.G = self.get_net(self.Q)
 
-    def run_sim(self,T=10):
+    def run_sim(self,T=10,save_data=False):
+        if(save_data):
+            self.Q_sim = []
+            self.P_sim = []
+            self.p_sim = []
+            self.q_sim = []
         t=0
         while t<T:
             self.G = self.get_net(self.Q)
-            Q = self.Q
+            Q = self.Q.copy()
             self.Q = self.Q+self.P*self.dt
-            self.P = self.P+self.P_dot(Q,self.G)*self.dt
+            self.P = self.P+self.P_dot()*self.dt
+            if(self.gamma_agent):
+                self.P = self.P+self.f_gamma()*self.dt
+                self.q = self.q + self.p*self.dt
+            if(save_data):
+                self.Q_sim.append(self.Q)
+                self.P_sim.append(self.P)
+                self.p_sim.append(self.p)
+                self.q_sim.append(self.q)
+
             t = t+self.dt
 
     def plot(self,
@@ -98,10 +123,28 @@ class Flock:
                           width=arrow_width,
                           edgecolor='green',
                           facecolor='green')
+            G = self.G.copy()
+            Q = self.Q.copy()
+            node_colors = ['red']
 
+            if(self.gamma_agent):
+                rel_gamma = self.p/max(norms)
+                plt.arrow(self.q[0,0],self.q[0,1],rel_gamma[0,0],rel_gamma[0,1],
+                          width=arrow_width,
+                          edgecolor='blue',
+                          facecolor='blue')
+                G.add_node(self.N)
+                node_colors = []
+                for node in G:
+                    if node < self.N:
+                        node_colors.append('red')
+                    if node == self.N:
+                        node_colors.append('orange')
+                Q = np.append(Q,self.q).reshape(self.N+1,2)
 
-            nx.draw_networkx(self.G,
-                             pos=self.Q,
+            nx.draw_networkx(G,
+                             pos=Q,
+                             node_color=node_colors,
                              edge_color='black',
                              width=width,
                              node_size=node_size,
@@ -109,6 +152,7 @@ class Flock:
 
             plt.xlim(plt.xlim()[0]-np.abs(unit[0,0]),plt.xlim()[1]+np.abs(unit[0,0]))
             plt.ylim(plt.ylim()[0]-np.abs(unit[0,1]), plt.ylim()[1]+np.abs(unit[0,1]))
+
             return p
         else:
             p = plt.figure(figsize=(fig_size,fig_size))
@@ -126,6 +170,16 @@ class Flock:
                     if(not G.has_edge(i,j)):
                         G.add_edge(i,j)
         return(G)
+
+    def P_dot(self):
+        """For Flock class mostly"""
+        u = np.zeros((self.N,2))
+        A = nx.adjacency_matrix(self.G).todense()
+        for i in self.G.nodes():
+            for j in self.G.neighbors(i):
+                u[i] = u[i] + self.phi_alpha(self.sigma_norm(self.Q[j,:]-self.Q[i,:]))*(self.sigma_grad(self.Q[j,:]-self.Q[i,:]))
+                u[i] = u[i] + A[i,j]*(self.Q[j,:]-self.Q[i,:])
+        return u
 
 
     def sigma_norm(self,z):
@@ -145,3 +199,6 @@ class Flock:
         r_alpha = self.sigma_norm(self.r)
         d_alpha = self.sigma_norm(self.d)
         return self.rho_h(z/r_alpha)*self.phi(z-d_alpha)
+
+    def f_gamma(self):
+        return -self.C_q*(self.Q-self.q)-self.C_p*(self.P-self.p)

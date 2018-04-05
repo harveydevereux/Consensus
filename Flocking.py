@@ -81,8 +81,9 @@ class Flock:
         if(save_data):
             self.Q_sim = []
             self.P_sim = []
-            self.p_sim = []
-            self.q_sim = []
+            if(self.gamma_agent):
+                self.p_sim = []
+                self.q_sim = []
         t=0
         while t<T:
             self.G = self.get_net(self.Q)
@@ -96,8 +97,9 @@ class Flock:
             if(save_data):
                 self.Q_sim.append(self.Q)
                 self.P_sim.append(self.P)
-                self.p_sim.append(self.p)
-                self.q_sim.append(self.q)
+                if(self.gamma_agent):
+                    self.p_sim.append(self.p)
+                    self.q_sim.append(self.q)
 
             t = t+self.dt
 

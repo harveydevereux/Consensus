@@ -3,9 +3,13 @@ Implements consensus algorithms on fixed and time varying graphs including a flo
 consensus algorithm (velocity matching) and a general folocking algorithm based
 on the framework in [3]. 
 
-Nice movie: https://github.com/harveydevereux/Consensus/blob/master/Data/movie.gif 
+Nice movies: 
 
-For the theoretical results used consult 
+  For [3] https://github.com/harveydevereux/Consensus/blob/master/Data/Flock.gif
+  
+  For [2] https://github.com/harveydevereux/Consensus/blob/master/Data/movie.gif
+
+For the theoretical results (and algorithms) used consult 
 
 [1] *R. Olfati-Saber, J. A. Fax and R. M. Murray, "Consensus and Cooperation in Networked Multi-Agent Systems," in Proceedings of the IEEE, vol. 95, no. 1, pp. 215-233, Jan. 2007.
 doi: 10.1109/JPROC.2006.887293*

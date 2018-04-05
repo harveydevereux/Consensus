@@ -3,7 +3,10 @@ Implements consensus algorithms on fixed and time varying graphs including a flo
 consensus algorithm (velocity matching) and a general folocking algorithm based
 on the framework in [3]. 
 
-Nice movie: https://github.com/harveydevereux/Consensus/blob/master/Data/Flock.gif
+Nice movies: 
+
+  For [3] https://github.com/harveydevereux/Consensus/blob/master/Data/Flock.gif
+  For [2] https://github.com/harveydevereux/Consensus/blob/master/Data/movie.gif
 
 For the theoretical results used consult 
 

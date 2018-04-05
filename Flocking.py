@@ -89,7 +89,7 @@ class Flock:
             Q = self.Q.copy()
             P = self.P.copy()
             self.Q = self.Q+self.P*self.dt
-            self.P = self.P+self.P_dot(Q)*self.dt
+            self.P = self.P+self.P_dot(Q,P)*self.dt
             if(self.gamma_agent):
                 self.P = self.P+self.f_gamma(Q,P)*self.dt
                 self.q = self.q + self.p*self.dt
@@ -172,14 +172,14 @@ class Flock:
                         G.add_edge(i,j)
         return(G)
 
-    def P_dot(self,Q):
+    def P_dot(self,Q,P):
         """For Flock class mostly"""
         u = np.zeros((self.N,2))
         A = self.get_spatial_adjacency(Q)
         for i in self.G.nodes():
             for j in self.G.neighbors(i):
                 u[i] = u[i] + self.phi_alpha(self.sigma_norm(Q[j,:]-Q[i,:]))*(self.sigma_grad(Q[j,:]-Q[i,:]))
-                u[i] = u[i] + A[i,j]*(Q[j,:]-Q[i,:])
+                u[i] = u[i] + A[i,j]*(P[j,:]-P[i,:])
         return u
 
     def get_spatial_adjacency(self,Q):

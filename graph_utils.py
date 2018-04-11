@@ -13,6 +13,13 @@ def draw_graph(graph, labels=False, node_size=100, fig_size=8):
         nx.draw_networkx_labels(graph, pos, font_color="white");
     return p
 
+def fiedler_number(G):
+    L = nx.laplacian_matrix(G).todense()
+    e = np.linalg.eigvals(L)
+    rm = np.argmin(e)
+    e = np.delete(e,rm)
+    return min(np.real(e))
+
 def get_net(Q):
     """Draw a graph based on a position matrix with dimension Nxd"""
     G = nx.Graph()

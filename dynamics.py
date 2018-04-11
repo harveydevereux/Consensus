@@ -1,15 +1,10 @@
 import numpy as np
 import networkx as nx
 
-from graph_utils import normalized_laplacian_matrix as norm_L
-
 def distributed(x,L, *args):
     """Most basic distributed consensus algorithm
        It's actually gradient descent of 1/2(xLx)"""
     return -np.dot(L,x)
-
-def Fax_Murray(x, G):
-    return -np.dot(norm_L(G),x)
 
 def distributed_random_topology(x,graph, proportion=0.5, *args):
     """Same as dynamics but randomly rewires

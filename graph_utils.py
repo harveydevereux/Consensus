@@ -34,3 +34,16 @@ def normalized_adjacency_matrix(G):
 def normalized_laplacian_matrix(G):
     A = normalized_adjacency_matrix(G)
     return np.eye(A.shape[0],A.shape[1])-A
+
+def degree_matrix(G):
+    D = np.zeros((len(G),len(G)))
+    for i in nx.nodes(G):
+        D[i,i] = G.degree(i)
+    return D.astype(float)
+
+def Q_l_laplacian(G):
+    D = degree_matrix(G)
+    I = np.eye(D.shape[0],D.shape[1])
+    B = np.linalg.inv(I+D)
+    A = nx.adjacency_matrix(G).todense().astype(float)
+    return I-np.dot(B,(I+A))

@@ -62,7 +62,7 @@ class Consensus_Simulation:
         else:
             return False
 
-    def run_sim(self):
+    def run_sim(self,record_all=False):
         """run the core simulation"""
         t=0
         # could be re-set
@@ -86,25 +86,29 @@ class Consensus_Simulation:
             self.x = self.x+self.dt*self.f(self.x,*self.f_arg)
             # odd way to test for 1,2,3,etc
             # when arg is float
-            if (t-np.floor(t)<1e-2):
+            if (record_all):
                 self.X.append(self.x)
-                self.T.append(time.time()-start)
+                self.T.append(time.time()-start)                
+            else:
+                if (t-np.floor(t)<1e-2):
+                    self.X.append(self.x)
+                    self.T.append(time.time()-start)
             t = t+self.dt
         end = time.time()
         return t
 
         # get rid of non-integer times
         # vastly reduces memory load
-        T=list()
-        X=list()
-        for i in range(0,len(self.T)):
-            if i % 10 == 0:
-                T.append(self.T[i])
-                X.append(self.X[i])
-        self.T = T
-        self.X = X
-        del T
-        del X
+        # T=list()
+        # X=list()
+        # for i in range(0,len(self.T)):
+        #     if i % record_step == 0:
+        #         T.append(self.T[i])
+        #         X.append(self.X[i])
+        # self.T = T
+        # self.X = X
+        # del T
+        # del X
 
     def plot(self, weight_average=False):
         """Show the convergence analysis"""

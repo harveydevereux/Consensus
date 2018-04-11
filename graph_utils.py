@@ -22,3 +22,15 @@ def get_net(Q):
                 if(not G.has_edge(i,j)):
                     G.add_edge(i,j)
     return(G)
+
+def normalized_adjacency_matrix(G):
+    A = nx.adjacency_matrix(G).todense().astype(float)
+    for i in nx.nodes(G):
+        d_i = G.degree(i)
+        for j in G.neighbors(i):
+            A[i,j]=A[i,j]*(1/d_i)
+    return A
+
+def normalized_laplacian_matrix(G):
+    A = normalized_adjacency_matrix(G)
+    return np.eye(A.shape[0],A.shape[1])-A

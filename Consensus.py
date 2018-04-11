@@ -91,53 +91,7 @@ class Consensus_Simulation:
                 self.T.append(time.time()-start)
             t = t+self.dt
         end = time.time()
-
-    def run_sim_delay(self):
-        """Simulates the algorithm with a time delay of
-            int(tau) milliseconds"""
-        if(self.tau == 0):
-            return self.run_sim()
-        t=0
-        # could be re-set
-        self.x = self.x_init.copy()
-        self.X = list()
-        self.T = list()
-        flag = False
-
-        self.X.append(self.x_init)
-        self.T.append(0)
-        start = time.time()
-        while self.agreement() == False:
-            if(t==0 and self.warn and not nx.is_connected(self.graph)):
-                print("Graph not connected, consensus algorithm will probably not converge!")
-                print("Simulating to 5 seconds...")
-                flag = True
-            if(t==0 and self.tau*self.dt >= self.tau_max and self.warn):
-                print("Communication delay is to long, algorithm will probably not converge!")
-                print("Simulating to 5 seconds...")
-                flag = True
-            # if delay takes us to negative time
-            # do the normal thing
-
-            for i in range(1,self.size+1):
-                if(t - int(self.tau)*self.dt<0):
-                    break
-                else:
-                    x_tau = self.X[len(self.X)-1-int(self.tau)]
-                    dx = 0
-                    for v in self.graph.neighbors(i):
-                        if (v != i):
-                            dx = dx + x_tau[v-1]-x_tau[i-1]
-                    self.x[i-1] = self.x[i-1]+self.dt*dx
-
-
-            if(flag and time.time()-start>5):
-                break
-
-            self.X.append(self.x)
-            self.T.append(time.time()-start)
-            t = t+self.dt
-        end = time.time()
+        return t
 
         # get rid of non-integer times
         # vastly reduces memory load
@@ -152,15 +106,23 @@ class Consensus_Simulation:
         del T
         del X
 
-    def plot(self):
+    def plot(self, weight_average=False):
         """Show the convergence analysis"""
         if(len(self.X)==0 or len(self.T)==0):
             print("Nothing to plot...")
         x = np.array(self.X)
         for i in range(0,x.shape[1]):
             plt.plot(self.T,x[:,i,0])
-
-        plt.plot(np.linspace(0,self.T[-1],10),np.zeros(10)+np.mean(self.x_init), label="Connected graph consensus: "+str(np.mean(self.x_init)),color='red',marker='s')
+        if(weight_average):
+            w_i = np.zeros(self.size)
+            s = sum(np.array(self.graph.degree)[:,1])
+            x = self.x_init
+            for i in nx.nodes(self.graph):
+                w_i[i] = self.graph.degree(i)/s
+                x[i] = x[i]*w_i[i]
+            plt.plot(np.linspace(0,self.T[-1],10),np.zeros(10)+sum(x), label="Connected graph consensus: "+str(sum(x)),color='red',marker='s')
+        else:
+            plt.plot(np.linspace(0,self.T[-1],10),np.zeros(10)+np.mean(self.x_init), label="Connected graph consensus: "+str(np.mean(self.x_init)),color='red',marker='s')
         plt.grid()
         plt.xlabel("Time (seconds)")
         plt.ylabel("State")

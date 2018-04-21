@@ -5,9 +5,15 @@ on the framework in [3].
 
 Nice movies: 
 
-  For [3] https://github.com/harveydevereux/Consensus/blob/master/Data/Flock_no_fragment.gif
+  For [3] 
+    
+   * [Flocking without fragmentation](https://github.com/harveydevereux/Consensus/blob/master/Data/Flock_no_fragment.gif)
+   
+   * [Fragmenting flock](https://github.com/harveydevereux/Consensus/blob/master/Data/Flock_fragment.gif)
   
-  For [2] https://github.com/harveydevereux/Consensus/blob/master/Data/movie.gif
+  For [2] 
+    
+   * [Velocity matching](https://github.com/harveydevereux/Consensus/blob/master/Data/movie.gif)
 
 For the theoretical results (and algorithms) used consult 
 

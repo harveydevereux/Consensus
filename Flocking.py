@@ -2,6 +2,7 @@ import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
 from graph_utils import *
+import time
 
 def rho_h(z,h=0.2):
     if (0 <= z and z < h):
@@ -77,14 +78,16 @@ class Flock:
 
         self.G = self.get_net(self.Q)
 
-    def run_sim(self,T=10,save_data=False):
+    def run_sim(self,T=10,save_data=False,to_agreement=False):
         if(save_data):
             self.Q_sim = []
             self.P_sim = []
+            self.sim_time = []
             if(self.gamma_agent):
                 self.p_sim = []
                 self.q_sim = []
         t=0
+        start = time.time()
         while t<T:
             self.G = self.get_net(self.Q)
             Q = self.Q.copy()
@@ -95,13 +98,19 @@ class Flock:
                 self.P = self.P+self.f_gamma(Q,P)*self.dt
                 self.q = self.q + self.p*self.dt
             if(save_data):
+                self.sim_time.append(time.time()-start)
                 self.Q_sim.append(self.Q)
                 self.P_sim.append(self.P)
                 if(self.gamma_agent):
                     self.p_sim.append(self.p)
                     self.q_sim.append(self.q)
-
-            t = t+self.dt
+            if(to_agreement and self.velocity_angle_agreement(self.P)):
+                t = T
+            elif (to_agreement):
+                t = t+self.dt
+                T = T+self.dt
+            else:
+                t = t+self.dt
 
     def plot(self,
              Graph=True,
@@ -214,3 +223,18 @@ class Flock:
 
     def f_gamma(self,Q,P):
         return -self.C_q*(Q-self.q)-self.C_p*(P-self.p)
+
+    def velocity_angle_agreement(self,v,tol=1e-6):
+        unit = np.zeros(v.shape)
+        for i in range(0,len(v)):
+            unit[i] = v[i]/np.linalg.norm(v[i])
+        ref = np.angle(complex(unit[1,0],unit[1,1]))
+        for i in range(0,len(unit)):
+            if (np.abs(ref - np.angle(complex(unit[i,0],unit[i,1])))>tol):
+                return False
+        return True
+    def speed_agreement(self,v,tol=1e-6):
+        for i in range(0,len(v)):
+            if np.linalg.norm(v[1]-v[i])>tol:
+                return False
+        return True

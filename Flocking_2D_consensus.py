@@ -32,23 +32,26 @@ class Flock_Simulation:
                 self.r_dot_arg = np.ones(1)
             if (velocity_dynamics_args==None):
                 self.v_dot_arg = np.ones(1)
-            if (isinstance(position_dynamics_args, type(np.ones(1))) and position_dynamics_args!=None):
-                self.r_dot_arg = position_dynamics_args
-            else:
-                print("Argument Error: position_dynamics_args must be np.ndarray type")
-
-            if (isinstance(position_dynamics_args, type(np.ones(1))) and velocity_dynamics_args != None):
-                self.v_dot_arg = velocity_dynamics_args
-            else:
-                print("Argument Error: velocity_dynamics_args must be np.ndarray type")
+            # if (isinstance(position_dynamics_args, type(np.ones(1))) and position_dynamics_args!=None):
+            #     self.r_dot_arg = position_dynamics_args
+            # else:
+            #     print("Argument Error: position_dynamics_args must be np.ndarray type")
+            #
+            # if (isinstance(position_dynamics_args, type(np.ones(1))) and velocity_dynamics_args != None):
+            #     self.v_dot_arg = velocity_dynamics_args
+            # else:
+            #     print("Argument Error: velocity_dynamics_args must be np.ndarray type")
         else:
             print("Argument Error: position_dynamics and velocity_dynamics must be functions")
-        if(position_init==None):
+        if(isinstance(position_init, type(np.ones(1)))==False):
             self.r = np.zeros((self.size,2))
             for i in range(0,self.size):
                 self.r[i] = 5*np.random.rand(2)
             self.s_graph = self.S_graph_pos(self.r)
-        if(velocity_init==None):
+        else:
+            self.r=position_init
+            self.s_graph = self.S_graph_pos(self.r)
+        if(isinstance(velocity_init,type(np.ones(1)))==False):
             self.v = np.zeros((self.size,2))
             for i in range(0,self.size):
                 self.v[i] = 8*np.random.rand(2)
@@ -56,6 +59,8 @@ class Flock_Simulation:
                     self.v[i,0] = -1*self.v[i,0]
                 if (np.random.rand(1)<0.5):
                     self.v[i,1] = -1*self.v[i,1]
+        else:
+            self.v = velocity_init
 
         self.dt = time_step
         self.R = distance_threshold
@@ -84,8 +89,12 @@ class Flock_Simulation:
                 return False
         return True
 
-    def run_sim(self):
+    def run_sim(self, save_data=False):
         t=0
+        if(save_data):
+            self.T_sim = []
+            self.V_sim = []
+            self.R_sim = []
         start = time.time()
         while self.velocity_angle_agreement(self.v)==False:
             u = self.v.copy()
@@ -93,12 +102,18 @@ class Flock_Simulation:
             self.r = self.r+self.dt*self.r_dot(u,self.r,self.v_graph, self.s_graph, *self.v_dot_arg)
             self.s_graph = self.S_graph_pos(self.r,self.R)
             t = t+self.dt
-        print(time.time()-start)
+            if (save_data):
+                self.T_sim.append(time.time()-start)
+                self.V_sim.append(self.v)
+                self.R_sim.append(self.r)
 
-    def run_sim_switch(self):
+    def run_sim_switch(self, p=1,proportion=0.5, save_data=False):
         t=0
-        p=0.75
-        proportion=0.75
+        if(save_data):
+            self.T_sim = []
+            self.V_sim = []
+            self.R_sim = []
+            self.VG = []
         start = time.time()
         while self.velocity_angle_agreement(self.v)==False:
             u = self.v.copy()
@@ -108,7 +123,11 @@ class Flock_Simulation:
             if(np.random.rand(1)<p):
                 nx.connected_double_edge_swap(self.v_graph,np.floor(proportion*self.size))
             t = t+self.dt
-        print(time.time()-start)
+            if (save_data):
+                self.T_sim.append(time.time()-start)
+                self.V_sim.append(self.v)
+                self.R_sim.append(self.r)
+                self.VG.append(self.v_graph)
 
     def plot(self):
         unit = np.zeros(self.v.shape)

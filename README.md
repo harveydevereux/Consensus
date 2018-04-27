@@ -6,14 +6,16 @@ on the framework in [3].
 ## Some movies showing the models in action
 
 ### For [3] 
-    
-   * ![alt text](https://github.com/harveydevereux/Consensus/blob/master/Data/Flock_no_fragment.gif)
+
+    ![alt text](https://github.com/harveydevereux/Consensus/blob/master/Data/Flock_no_fragment.gif)
    
-   * ![alt text](https://github.com/harveydevereux/Consensus/blob/master/Data/Flock_fragment.gif)
+This next example shows fragmentation in as mentioned in the paper
+  
+    ![alt text](https://github.com/harveydevereux/Consensus/blob/master/Data/Flock_fragment.gif)
   
 ### For [2] 
     
-   * ![alt text](https://github.com/harveydevereux/Consensus/blob/master/Data/movie.gif)
+    ![alt text](https://github.com/harveydevereux/Consensus/blob/master/Data/movie.gif)
 
 For the theoretical results (and algorithms) used consult 
 

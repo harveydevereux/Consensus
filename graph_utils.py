@@ -2,6 +2,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 import networkx as nx
 
+def maximum_degree(graph):
+    "return (node,degree) for node with max degree in graph"
+    m = (0,0)
+    for d in graph.degree():
+        if (d[1] > m[1]):
+            m = d
+    return m
+
 def draw_graph(graph, labels=False, node_size=100, fig_size=8):
     """wraps the networkx draw function in a nice way"""
     pos = nx.fruchterman_reingold_layout(graph);
@@ -54,3 +62,28 @@ def Q_l_laplacian(G):
     B = np.linalg.inv(I+D)
     A = nx.adjacency_matrix(G).todense().astype(float)
     return I-np.dot(B,(I+A))
+
+# for weighted average consensus sims
+# of form Kx^dot = -Lx
+def get_weight_matrix(N):
+    K = np.eye(N,N)
+    for i in range(0,K.shape[0]):
+        for j in range(0,K.shape[1]):
+            if (i==j):
+                if (np.random.rand()>0.5):
+                    K[i,j] = K[i,j]+np.random.rand()
+    return K
+
+def weight_vector_to_matrix(v):
+    K = np.zeros((v.shape[0],v.shape[0]))
+    for i in range(0,v.shape[0]):
+        for j in range(0,v.shape[0]):
+            if (i==j):
+                K[i,j] = v[i]
+    return K
+
+def vector_dist(v):
+    p = np.zeros(len(np.unique(v)))
+    for i,val in enumerate(np.unique(v)):
+        p[i] = len(v[np.where(v==val)])
+    return p/sum(p)

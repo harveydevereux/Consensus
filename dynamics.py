@@ -1,5 +1,6 @@
 import numpy as np
 import networkx as nx
+from control import pade
 
 def distributed(x,L, *args):
     """Most basic distributed consensus algorithm
@@ -13,6 +14,9 @@ def distributed_random_topology(x,graph, proportion=0.5, *args):
     L = nx.laplacian_matrix(graph)
     L = L.todense()
     return -np.dot(L,x)
+
+def weighted_average_consensus(x, L, K):
+    return -np.dot(K,np.dot(L,x))
 
 def P_dot(Q,G):
     """For Flock class mostly"""

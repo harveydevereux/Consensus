@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import networkx as nx
 import time
+from graph_utils import maximum_degree
 
 class Consensus_Simulation:
     """Class to model a general consensus problem
@@ -33,10 +34,11 @@ class Consensus_Simulation:
         self.tau = delay
         # set up initial vector to
         # 1,2,3,...,n
-        if(x_init==None):
-            self.x_init = np.linspace(1,self.size,self.size)
-            self.x_init=self.x_init.reshape(self.size,1)
-        self.x = self.x_init.copy()
+        if(not isinstance(x_init, type(np.ones(1))) and x_init==None):
+            self.x = np.linspace(1,self.size,self.size)
+            self.x = self.x.reshape(self.size,1)
+        else:
+            self.x = x_init.copy().reshape(self.size,1)
         # The Laplacian matrix, quite the building block
         # for the algorithms
         self.L = nx.laplacian_matrix(self.graph).todense()
@@ -65,13 +67,12 @@ class Consensus_Simulation:
     def run_sim(self,record_all=False):
         """run the core simulation"""
         t=0
-        # could be re-set
-        self.x = self.x_init.copy()
+        self.x_init = self.x
         self.X = list()
         self.T = list()
         flag = False
 
-        self.X.append(self.x_init)
+        self.X.append(self.x)
         self.T.append(0)
         start = time.time()
         while self.agreement() == False:
@@ -88,27 +89,50 @@ class Consensus_Simulation:
             # when arg is float
             if (record_all):
                 self.X.append(self.x)
-                self.T.append(time.time()-start)                
+                self.T.append(time.time()-start)
             else:
                 if (t-np.floor(t)<1e-2):
                     self.X.append(self.x)
                     self.T.append(time.time()-start)
             t = t+self.dt
         end = time.time()
-        return t
+        return self.T[-1]
 
-        # get rid of non-integer times
-        # vastly reduces memory load
-        # T=list()
-        # X=list()
-        # for i in range(0,len(self.T)):
-        #     if i % record_step == 0:
-        #         T.append(self.T[i])
-        #         X.append(self.X[i])
-        # self.T = T
-        # self.X = X
-        # del T
-        # del X
+    def sim_delay(self, delay = 1, runtime=1000):
+        t=0
+        self.tau=delay
+        self.x_init = self.x
+        self.X = list()
+        self.T = list()
+        flag = False
+        for i in range(0,delay+1):
+            self.X.append(self.x)
+            self.T.append(0)
+        start = time.time()
+        while self.agreement() == False:
+            if (self.T[-1] > runtime):
+                break
+            if (t==0 and self.warn and not nx.is_connected(self.graph)):
+                print("Graph not connected, consensus algorithm will probably not converge!")
+                print("Simulating to 5 seconds...")
+                flag = True
+            if(flag and time.time()-start>5):
+                break
+            # core simulation done here
+            # very simple discretisation...
+            self.x = self.X[-1]
+            if (len(self.X)-delay<0):
+                pass
+            else:
+                index = len(self.X)-delay
+                self.x = self.X[-1]+self.dt*self.f(self.X[index],*self.f_arg)
+            # odd way to test for 1,2,3,etc
+            # when arg is float
+            self.X.append(self.x)
+            self.T.append(time.time()-start)
+            t = t+self.dt
+        end = time.time()
+        return self.T[-1]
 
     def plot(self, weight_average=False):
         """Show the convergence analysis"""
@@ -126,7 +150,7 @@ class Consensus_Simulation:
                 x[i] = x[i]*w_i[i]
             plt.plot(np.linspace(0,self.T[-1],10),np.zeros(10)+sum(x), label="Connected graph consensus: "+str(sum(x)),color='red',marker='s')
         else:
-            plt.plot(np.linspace(0,self.T[-1],10),np.zeros(10)+np.mean(self.x_init), label="Connected graph consensus: "+str(np.mean(self.x_init)),color='red',marker='s')
+            plt.plot(np.linspace(0,self.T[-1],10),np.zeros(10)+np.mean(self.x_init), label="Connected graph consensus: "+str(round(np.mean(self.x_init),3)),color='red',marker='s')
         plt.grid()
         plt.xlabel("Time (seconds)")
         plt.ylabel("State")
@@ -136,3 +160,7 @@ class Consensus_Simulation:
     def print_delay(self):
         print("Delay in seconds")
         return self.dt*self.tau
+
+    def delay_stable_max(self):
+        d = maximum_degree(self.graph)
+        return (np.pi)/(4*d[1])

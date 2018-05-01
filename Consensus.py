@@ -98,7 +98,7 @@ class Consensus_Simulation:
         end = time.time()
         return self.T[-1]
 
-    def sim_delay(self, delay = 1, runtime=1000):
+    def sim_delay(self, delay = 1, runtime=100):
         t=0
         self.tau=delay
         self.x_init = self.x

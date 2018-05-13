@@ -14,6 +14,9 @@ def distributed_random_topology(x,graph, proportion=0.5, *args):
     L = L.todense()
     return -np.dot(L,x)
 
+def weighted_average_consensus(x, L, K):
+    return -np.dot(K,np.dot(L,x))
+
 def P_dot(Q,G):
     """For Flock class mostly"""
     def rho_h(z,h=0.2):

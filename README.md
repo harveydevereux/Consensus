@@ -7,7 +7,7 @@ on the framework in [3].
 
 ### For [3] 
 
-    ![alt text](https://github.com/harveydevereux/Consensus/blob/master/Data/Flock_no_fragment.gif)
+    ![](https://github.com/harveydevereux/Consensus/blob/master/Data/Flock_no_fragment.gif)
    
 This next example shows fragmentation in as mentioned in the paper
   

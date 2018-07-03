@@ -1,6 +1,6 @@
 # Consensus
 Implements consensus algorithms on fixed and time varying graphs including a flocking based
-consensus algorithm (velocity matching) and a general folocking algorithm based
+consensus algorithm (velocity matching) and a general flocking algorithm based
 on the framework in [3]. 
 
 ## Essay 

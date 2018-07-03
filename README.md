@@ -3,6 +3,12 @@ Implements consensus algorithms on fixed and time varying graphs including a flo
 consensus algorithm (velocity matching) and a general folocking algorithm based
 on the framework in [3]. 
 
+## Essay 
+
+[Read here](https://github.com/harveydevereux/Consensus/blob/master/consensus-complex-networks.pdf)
+
+Includes some discussion of the papers [1][2][3] and some simulation results+comments
+
 ## Some movies showing the models in action
 
 ### For [3] 
@@ -16,6 +22,8 @@ This next example shows fragmentation in as mentioned in the paper
 ### For [2] 
     
     ![alt text](https://github.com/harveydevereux/Consensus/blob/master/Data/movie.gif)
+
+## References
 
 For the theoretical results (and algorithms) used consult 
 

@@ -239,6 +239,7 @@ class Flock:
                          node_size=node_size,
                          with_labels=with_labels)
         plt.autoscale(enable=True)
+        plt.tick_params(axis='both',which='both',bottom=True,left=True,labelbottom=True,labelleft=True)
         plt.xlim(plt.xlim()[0] - np.abs(unit[0, 0]), plt.xlim()[1] + np.abs(unit[0, 0]))
         plt.ylim(plt.ylim()[0] - np.abs(unit[0, 1]), plt.ylim()[1] + np.abs(unit[0, 1]))
         plt.title("t = %ss" %(time_step_plot/100), fontsize=25)

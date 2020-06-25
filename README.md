@@ -5,25 +5,23 @@ on the framework in [3].
 
 ## Status
 
-- []
-
 ## Some movies showing the models in action
 
 ### For [3] 
 
-    ![](https://github.com/harveydevereux/Consensus/blob/master/Data/Flock_no_fragment.gif)
+![alt](https://github.com/harveydevereux/Consensus/blob/master/Data/Flock_no_fragment.gif)
    
 This next example shows fragmentation in as mentioned in the paper
   
-    ![alt text](https://github.com/harveydevereux/Consensus/blob/master/Data/Flock_fragment.gif)
+![alt text](https://github.com/harveydevereux/Consensus/blob/master/Data/Flock_fragment.gif)
   
 ### For [2] 
     
-    ![alt text](https://github.com/harveydevereux/Consensus/blob/master/Data/movie.gif)
+![alt text](https://github.com/harveydevereux/Consensus/blob/master/Data/movie.gif)
 
 ## Obstical avoidance (arthur-yh)
 
-    ![Obsticals](https://github.com/harveydevereux/Consensus/blob/master/Data/arthur-yh-obstical-exmaple)
+![Obsticals](https://github.com/harveydevereux/Consensus/blob/master/Data/arthur-yh-obstical-example.gif)
 
 ## Essay 
 

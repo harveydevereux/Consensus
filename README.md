@@ -1,37 +1,39 @@
-# Consensus
-Implements consensus algorithms on fixed and time varying graphs including a flocking based
-consensus algorithm (velocity matching) and a general flocking algorithm based
-on the framework in [3]. 
+# Add a new code (Flocking-avoiding.py) for multi-UAV passing obstacles, and I see the your code seems not contain the function to draw animation, so I add it to code Flocking.py and Flocking-avoiding.py.
+## Modifying time:
+1. 25,June. Add axis to the figure
+2. 26,June. Add animation to the figure, the function name is plot_time_series which lie in the struct Flock both Flocking.py and Flocking-avoiding.py.
+3. 1,July. Add code Flocking-avoiding.py to the respositories
+4. 3,July. Modify the axis in order to let the obstacle look like circle not ellipse. But the result is not show in the next section. The result of next section is also ellipse for obstacle.
 
-## Essay 
+## Result-shwoing
+### The results for algorithm 1,2 and 3
+This section only shows a few results because Github has the limitation of file size.
 
-[Read here](https://github.com/harveydevereux/Consensus/blob/master/consensus-complex-networks.pdf)
+- Algorithm 1: 40 arfa-agent without gamma-agent and obstacles.
 
-Includes some discussion of the papers [1][2][3] and some simulation results+comments
+![](https://github.com/arthur-yh/Consensus/blob/yh/results/flock-algorithm1-40.gif)
 
-## Some movies showing the models in action
+- Algorithm 1: 150 arfa-agent without gamma-agent and obstacles.
 
-### For [3] 
+![](https://github.com/arthur-yh/Consensus/blob/yh/results/flock-algorithm1-150.gif)
 
-    ![](https://github.com/harveydevereux/Consensus/blob/master/Data/Flock_no_fragment.gif)
-   
-This next example shows fragmentation in as mentioned in the paper
-  
-    ![alt text](https://github.com/harveydevereux/Consensus/blob/master/Data/Flock_fragment.gif)
-  
-### For [2] 
-    
-    ![alt text](https://github.com/harveydevereux/Consensus/blob/master/Data/movie.gif)
++ Algorithm 2: 10 arfa-agent with gamma-agent but no obstacles.
 
-## References
+![](https://github.com/arthur-yh/Consensus/blob/yh/results/flock-algorithm2-10.gif)
 
-For the theoretical results (and algorithms) used consult 
+- Algorithm 3: 50 arfa-agent with gamma-agent and obstacles. 
 
-[1] *R. Olfati-Saber, J. A. Fax and R. M. Murray, "Consensus and Cooperation in Networked Multi-Agent Systems," in Proceedings of the IEEE, vol. 95, no. 1, pp. 215-233, Jan. 2007.
-doi: 10.1109/JPROC.2006.887293*
+The parameters is based on the paper in reference but it doesn't shows the specific for beda-agent-Cq, arfa-agent-Cq and gamma-agent-Cq. It just shows beda-agent-Cq > gamma-agent-Cq > arfa-agent-Cq. So I set them to this: 
+```
+agent beda-agent-Cq = 16，arfa-agent-Cq = 2.5, gamma-agent-Cq = 4.5
+```
+![image](https://github.com/arthur-yh/Consensus/blob/yh/results/TIM%E6%88%AA%E5%9B%BE20190701194014.png)
 
-[2] *H. G. Tanner, A. Jadbabaie and G. J. Pappas, "Flocking in Fixed and Switching Networks," in IEEE Transactions on Automatic Control, vol. 52, no. 5, pp. 863-868, May 2007.
-doi: 10.1109/TAC.2007.895948*
+![image](https://github.com/arthur-yh/Consensus/blob/yh/results/avoid44.24.png)
 
-[3] *R. Olfati-Saber, "Flocking for multi-agent dynamic systems: algorithms and theory," in IEEE Transactions on Automatic Control, vol. 51, no. 3, pp. 401-420, March 2006.
-doi: 10.1109/TAC.2005.864190*
+![image](https://github.com/arthur-yh/Consensus/blob/yh/results/aviod51.54.png)
+
+
+## Reference 
+[1] Flocking for Multi-Agent Dynamic Systems:Algorithms and Theory,Reza Olfati-Saber,June 22, 2004
+

@@ -5,6 +5,10 @@ on the framework in [3].
 
 ## Status
 
+| Travis |
+|--------|
+| [![Build Status](https://travis-ci.com/harveydevereux/Consensus.svg?branch=master)](https://travis-ci.com/harveydevereux/Consensus) |
+
 ## Some movies showing the models in action
 
 ### For [3]

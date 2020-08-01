@@ -1,37 +1,41 @@
 # Consensus
 Implements consensus algorithms on fixed and time varying graphs including a flocking based
 consensus algorithm (velocity matching) and a general flocking algorithm based
-on the framework in [3]. 
+on the framework in [3].
 
 ## Status
 
+| Travis |
+|--------|
+| [![Build Status](https://travis-ci.com/harveydevereux/Consensus.svg?branch=master)](https://travis-ci.com/harveydevereux/Consensus) |
+
 ## Some movies showing the models in action
 
-### For [3] 
+### For [3]
 
-![alt](https://github.com/harveydevereux/Consensus/blob/master/Data/Flock_no_fragment.gif)
-   
+![alt](https://github.com/harveydevereux/Consensus/blob/master/Examples/Flock_no_fragment.gif)
+
 This next example shows fragmentation in as mentioned in the paper
-  
-![alt text](https://github.com/harveydevereux/Consensus/blob/master/Data/Flock_fragment.gif)
-  
-### For [2] 
-    
-![alt text](https://github.com/harveydevereux/Consensus/blob/master/Data/movie.gif)
+
+![alt text](https://github.com/harveydevereux/Consensus/blob/master/Examples/Flock_fragment.gif)
+
+### For [2]
+
+![alt text](https://github.com/harveydevereux/Consensus/blob/master/Examples/movie.gif)
 
 ## Obstical avoidance (arthur-yh)
 
-![Obsticals](https://github.com/harveydevereux/Consensus/blob/master/Data/arthur-yh-obstical-example.gif)
+![Obsticals](https://github.com/harveydevereux/Consensus/blob/master/Examples/arthur-yh-obstical-example.gif)
 
-## Essay 
+## Essay
 
-[Read here](https://github.com/harveydevereux/Consensus/blob/master/consensus-complex-networks.pdf)
+[Read here](https://github.com/harveydevereux/Consensus/blob/master/Examples/consensus-complex-networks.pdf)
 
 Includes some discussion of the papers [1][2][3] and some simulation results+comments
 
 ## References
 
-For the theoretical results (and algorithms) used consult 
+For the theoretical results (and algorithms) used consult
 
 [1] *R. Olfati-Saber, J. A. Fax and R. M. Murray, "Consensus and Cooperation in Networked Multi-Agent Systems," in Proceedings of the IEEE, vol. 95, no. 1, pp. 215-233, Jan. 2007.
 doi: 10.1109/JPROC.2006.887293*
